@@ -122,13 +122,11 @@ static int ols_convert_basic_trigger(const struct sr_dev_inst *sdi, struct ols_b
 	struct sr_trigger_stage *stage;
 	struct sr_trigger_match *match;
 	const GSList *l, *m;
-	int i, requested_num_stages;
+	int requested_num_stages;
 
 	ols_trigger->num_stages = 0;
-	for (i = 0; i < NUM_BASIC_TRIGGER_STAGES; i++) {
-		ols_trigger->trigger_mask[i] = 0;
-		ols_trigger->trigger_value[i] = 0;
-	}
+	memset(ols_trigger->trigger_mask, 0, NUM_BASIC_TRIGGER_STAGES * sizeof(uint32_t));
+	memset(ols_trigger->trigger_value, 0, NUM_BASIC_TRIGGER_STAGES * sizeof(uint32_t));
 
 	if (!(trigger = sr_session_trigger_get(sdi->session)))
 		return SR_OK;
