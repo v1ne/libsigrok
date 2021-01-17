@@ -122,7 +122,7 @@ static int ols_convert_basic_trigger(const struct sr_dev_inst *sdi, struct ols_b
 	struct sr_trigger_stage *stage;
 	struct sr_trigger_match *match;
 	const GSList *l, *m;
-	int i;
+	int i, requested_num_stages;
 
 	ols_trigger->num_stages = 0;
 	for (i = 0; i < NUM_BASIC_TRIGGER_STAGES; i++) {
@@ -133,12 +133,14 @@ static int ols_convert_basic_trigger(const struct sr_dev_inst *sdi, struct ols_b
 	if (!(trigger = sr_session_trigger_get(sdi->session)))
 		return SR_OK;
 
-	ols_trigger->num_stages = g_slist_length(trigger->stages);
-	if (ols_trigger->num_stages > NUM_BASIC_TRIGGER_STAGES) {
+	requested_num_stages = g_slist_length(trigger->stages);
+	if (requested_num_stages > NUM_BASIC_TRIGGER_STAGES) {
 		sr_err("This device only supports %d trigger stages.",
 				NUM_BASIC_TRIGGER_STAGES);
 		return SR_ERR;
 	}
+
+	ols_trigger->num_stages = requested_num_stages;
 
 	for (l = trigger->stages; l; l = l->next) {
 		stage = l->data;
